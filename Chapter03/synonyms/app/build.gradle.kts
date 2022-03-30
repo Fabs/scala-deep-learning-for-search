@@ -38,10 +38,11 @@ dependencies {
     implementation("org.apache.lucene:lucene-queryparser:8.11.1")
 
     // Deep Learning
-    implementation("org.deeplearning4j:deeplearning4j-core:1.0.0-M1")
-    implementation("org.deeplearning4j:deeplearning4j-nlp:1.0.0-M1")
-    implementation("org.nd4j:nd4j-native:1.0.0-M1")
-    implementation("org.nd4j:nd4j-native-platform:1.0.0-M1")
+    implementation("org.deeplearning4j:deeplearning4j-core:1.0.0-M2")
+    implementation("org.deeplearning4j:deeplearning4j-nlp:1.0.0-M2")
+    implementation("org.nd4j:nd4j-native:1.0.0-M2")
+    implementation("org.nd4j:nd4j-native-platform:1.0.0-M2")
+    implementation("org.jblas:jblas:1.2.5")
 }
 
 testing {
