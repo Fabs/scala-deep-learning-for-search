@@ -4,6 +4,7 @@ import org.deeplearning4j.nn.conf.{BackpropType, NeuralNetConfiguration}
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener
 import org.nd4j.linalg.activations.Activation
+import org.nd4j.linalg.factory.Nd4j
 import org.nd4j.linalg.lossfunctions.LossFunctions
 import synonyms.Config.dataPath
 import tools.CharacterIterator
@@ -45,10 +46,26 @@ new PrintWriter(s"$dataPath/queries.txt") {
 }
 
 val miniBatchSize = 1
-val train = new CharacterIterator(s"$dataPath/queries.txt",
+val train = new CharacterIterator(s"$dataPath/queries10.txt",
   StandardCharsets.UTF_8, miniBatchSize, sequenceSize)
 
 net.setListeners(new ScoreIterationListener(1))
+var i = 0
+println(train.hasNext())
 while (train.hasNext()) {
   net.fit(train)
+  println(s"Batch $i - ${train.hasNext()}")
+  i += 1
 }
+
+val initialization = "hero"
+val input = Nd4j.zeros(sequenceSize, initialization.length())
+val init = initialization.toCharArray()
+(0 to init.length - 1).foreach(i => {
+  val idx = train.convertCharacterToIndex(init(i))
+
+  input.putScalar(Array(idx, i), 1.0f)
+})
+
+val output = net.rnnTimeStep(input)
+println(output)

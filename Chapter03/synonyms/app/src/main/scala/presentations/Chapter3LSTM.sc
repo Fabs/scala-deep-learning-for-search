@@ -1,4 +1,4 @@
-import construct.SearchEngine
+import construct.{ExpandQuery, SearchEngine}
 import data.ProductData
 import models.{Product, ProductLuceneConverter}
 import org.apache.lucene.analysis._
@@ -21,4 +21,6 @@ engine.index(train, deleteAll = true)
 val test = ProductData.readProductDocuments(s"$dataPath/product_test.csv")
 engine.index(test, deleteAll = true)
 
-engine.search("+Refrigerator", analyzer = defaultAnalyzer)
+engine.search("shower stuff", analyzer = defaultAnalyzer, limit = 5)
+engine.search("shower", analyzer = defaultAnalyzer,
+  queryParser = new ExpandQuery("title", defaultAnalyzer), limit = 5)

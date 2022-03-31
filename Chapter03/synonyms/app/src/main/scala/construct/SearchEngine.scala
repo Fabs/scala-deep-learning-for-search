@@ -13,7 +13,8 @@ import tools.tools.time
 import java.nio.file.{Path, Paths}
 
 
-class SearchEngine[T](val indexLocation: String, fieldAnalyzer: PerFieldAnalyzerWrapper, converter: LuceneConverter[T]) {
+class SearchEngine[T](val indexLocation: String, fieldAnalyzer: PerFieldAnalyzerWrapper,
+                      converter: LuceneConverter[T]) {
   val indexPath: Path = Paths.get(indexLocation)
   println(indexLocation)
   val directory: FSDirectory = FSDirectory.open(indexPath)
@@ -33,10 +34,11 @@ class SearchEngine[T](val indexLocation: String, fieldAnalyzer: PerFieldAnalyzer
     writer.close()
   }
 
-  def search(queryText: String, field: String = "title", limit: Int = 100, analyzer: Analyzer = new WhitespaceAnalyzer(), explain: Boolean = false) = {
+  def search(queryText: String, field: String = "title", limit: Int = 100, analyzer: Analyzer = new
+      WhitespaceAnalyzer(), explain: Boolean = false, queryParser: QueryParser = null) = {
     val reader: IndexReader = DirectoryReader.open(directory)
-    val queryParser = new QueryParser(field, analyzer)
-    val query = queryParser.parse(queryText)
+    val parser = if (queryParser == null) new QueryParser(field, analyzer) else queryParser
+    val query = parser.parse(queryText)
     val searcher: IndexSearcher = new IndexSearcher(reader)
 
     val docs: TopDocs = time("Search", {
@@ -48,7 +50,7 @@ class SearchEngine[T](val indexLocation: String, fieldAnalyzer: PerFieldAnalyzer
     docs.scoreDocs.foreach((scoreDoc) => {
       val doc = reader.document(scoreDoc.doc)
       println(s"> ${converter.fromLuceneDoc(doc)}")
-      if(explain) {
+      if (explain) {
         println(searcher.explain(query, scoreDoc.doc).toString)
       }
     })

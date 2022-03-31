@@ -146,7 +146,7 @@ public class CharacterIterator implements DataSetIterator {
         return validCharacters[idx];
     }
 
-    int convertCharacterToIndex(char c) {
+    public int convertCharacterToIndex(char c) {
         return charToIdxMap.get(c);
     }
 
